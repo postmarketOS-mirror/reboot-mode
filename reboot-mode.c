@@ -23,40 +23,40 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <sys/syscall.h>
 #include <unistd.h>
 
-void usage(char *appname)
-{
-	printf("Usage: %s [-h] MODE\n\n", appname);
-	printf("Reboot the device to the MODE specified (e.g. recovery, bootloader)\n\n");
-	printf("WARNING: the reboot is instantaneous\n\n");
-	printf("optional arguments:\n");
-	printf("  -h    Show this help message and exit\n");
+void usage(char *appname) {
+  printf("Usage: %s [-h] MODE\n\n", appname);
+  printf("Reboot the device to the MODE specified (e.g. recovery, "
+         "bootloader)\n\n");
+  printf("WARNING: the reboot is instantaneous\n\n");
+  printf("optional arguments:\n");
+  printf("  -h    Show this help message and exit\n");
 }
 
-int main(int argc, char **argv)
-{
-	if (argc != 2) {
-		usage(argv[0]);
-		exit(1);
-	}
+int main(int argc, char **argv) {
+  if (argc != 2) {
+    usage(argv[0]);
+    exit(1);
+  }
 
-	int opt;
-	while ((opt = getopt(argc, argv, "h")) != -1) {
-		switch (opt) {
-		case 'h':
-		default:
-			usage(argv[0]);
-			exit(1);
-		}
-	}
+  int opt;
+  while ((opt = getopt(argc, argv, "h")) != -1) {
+    switch (opt) {
+    case 'h':
+    default:
+      usage(argv[0]);
+      exit(1);
+    }
+  }
 
-	sync();
+  sync();
 
-	int ret;
-	ret = syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2, LINUX_REBOOT_CMD_RESTART2, argv[1]);
+  int ret;
+  ret = syscall(__NR_reboot, LINUX_REBOOT_MAGIC1, LINUX_REBOOT_MAGIC2,
+                LINUX_REBOOT_CMD_RESTART2, argv[1]);
 
-	if (ret < 0) {
-		printf("Error: %s\n", strerror(errno));
-	}
+  if (ret < 0) {
+    printf("Error: %s\n", strerror(errno));
+  }
 
-	return ret;
+  return ret;
 }
